@@ -5,7 +5,7 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class DepartamentManager {
+public class DepartmentManager {
 	private int deptNo;
 	private int empNo;
 	private Date fromDate;

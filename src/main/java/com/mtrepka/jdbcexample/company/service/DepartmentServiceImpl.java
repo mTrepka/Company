@@ -2,19 +2,20 @@ package com.mtrepka.jdbcexample.company.service;
 
 import com.mtrepka.jdbcexample.company.domain.Departments;
 import com.mtrepka.jdbcexample.company.domain.Employees;
-import com.mtrepka.jdbcexample.company.domain.Gender;
 import com.mtrepka.jdbcexample.company.rowMappers.DepartmentRowMapper;
-import com.mtrepka.jdbcexample.company.rowMappers.EmployeeRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service("departamentService")
+@Service("departmentService")
 @RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService{
 	private final JdbcTemplate jdbcTemplate;
@@ -50,5 +51,37 @@ public class DepartmentServiceImpl implements DepartmentService{
 						return employee;
 					}
 				});
+	}
+
+	@Override
+	public Departments getDepartmentByNo(Integer id) {
+		String query = "SELECT * FROM departments WHERE dept_no = ?";
+		return jdbcTemplate.queryForObject(
+				query, new Object[]{id}, new DepartmentRowMapper());
+	}
+
+	@Override
+	public void deleteDepartment(Departments dep) {
+		jdbcTemplate.update(
+				"DELETE FROM departments WHERE dept_no = ?",
+				dep.getDeptNo());
+	}
+
+	@Override
+	public void saveDepartment(Departments dep) {
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("departments");
+		Map<String, Object> parameters = new HashMap<>();
+
+		parameters.put("dept_no",dep.getDeptName());
+		parameters.put("dept_name",dep.getDeptNo());
+		simpleJdbcInsert.execute(parameters);
+	}
+
+
+	@Override
+	public void updateDepartment(Departments dep) {
+		jdbcTemplate.update(
+				"update departments set dept_no = ?, dept_name = ? where dept_no = ?",
+				dep.getDeptNo(),dep.getDeptName());
 	}
 }

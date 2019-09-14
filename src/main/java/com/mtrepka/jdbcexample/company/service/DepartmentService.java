@@ -9,4 +9,12 @@ public interface DepartmentService {
 	Departments getByNo(String no);
 	List<Departments> getAll();
 	List<Employees> getEmployeesByDepartmentNo(String no);
+
+	void deleteDepartment(Departments dep);
+
+	void saveDepartment(Departments dep);
+
+	Departments getDepartmentByNo(Integer id);
+
+	void updateDepartment(Departments dep);
 }
